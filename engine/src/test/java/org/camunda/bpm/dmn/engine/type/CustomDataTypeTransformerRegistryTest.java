@@ -12,6 +12,9 @@
  */
 package org.camunda.bpm.dmn.engine.type;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.camunda.bpm.dmn.engine.DmnEngineConfiguration;
 import org.camunda.bpm.dmn.engine.impl.DefaultDmnEngineConfiguration;
 import org.camunda.bpm.dmn.engine.impl.spi.type.DmnDataTypeTransformer;
@@ -56,6 +59,16 @@ public class CustomDataTypeTransformerRegistryTest extends DmnEngineTest {
     assertThatDecisionTableResult()
       .hasSingleResult()
       .hasSingleEntry("isCustom");
+  }
+  
+  @Test
+  public void dataTypeTransformer() {
+    CustomDataTypeTransformer transformer = new CustomDataTypeTransformer();
+    ((DefaultDmnEngineConfiguration) getDmnEngineConfiguration()).getTransformer().getDataTypeTransformerRegistry().addTransformer("anotherCustomType",
+              transformer);
+    
+    //Antoher question: is this really supposed to be case-independent? If not, String.toLowerCaser() should be removed in org.camunda.bpm.dmn.engine.impl.type.DefaultDataTypeTransformerRegistry 
+    assertEquals("We expect to receive the same Receiver we registered for a type", transformer, ((DefaultDmnEngineConfiguration) getDmnEngineConfiguration()).getTransformer().getDataTypeTransformerRegistry().getTransformer("anotherCustomType"));
   }
 
   protected static class CustomDataTypeTransformerRegistry implements DmnDataTypeTransformerRegistry {

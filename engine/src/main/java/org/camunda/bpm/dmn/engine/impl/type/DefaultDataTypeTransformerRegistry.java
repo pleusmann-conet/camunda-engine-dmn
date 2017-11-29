@@ -45,7 +45,7 @@ public class DefaultDataTypeTransformerRegistry implements DmnDataTypeTransforme
   }
 
   public void addTransformer(String typeName, DmnDataTypeTransformer transformer) {
-    transformers.put(typeName, transformer);
+    transformers.put(typeName.toLowerCase(), transformer);
   }
 
   public DmnDataTypeTransformer getTransformer(String typeName) {
