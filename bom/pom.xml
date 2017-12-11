@@ -12,9 +12,13 @@
 
   <groupId>org.camunda.bpm.dmn</groupId>
   <artifactId>camunda-engine-dmn-bom</artifactId>
-  <version>7.7.0</version>
+  <version>7.7.0-wts</version>
   <name>camunda DMN - engine - bom</name>
   <packaging>pom</packaging>
+  
+  <properties>
+  	<version.project.camunda>7.7.0</version.project.camunda>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -28,13 +32,13 @@
       <dependency>
         <groupId>org.camunda.bpm.dmn</groupId>
         <artifactId>camunda-engine-feel-api</artifactId>
-        <version>${project.version}</version>
+        <version>${version.project.camunda}</version>
       </dependency>
 
       <dependency>
         <groupId>org.camunda.bpm.dmn</groupId>
         <artifactId>camunda-engine-feel-juel</artifactId>
-        <version>${project.version}</version>
+        <version>${version.project.camunda}</version>
       </dependency>
 
     </dependencies>
