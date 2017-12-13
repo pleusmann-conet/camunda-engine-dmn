@@ -265,7 +265,7 @@ public class DefaultDmnTransform implements DmnTransform, DmnElementTransformCon
     }
 
     if (expression instanceof DecisionTable) {
-      DmnDecisionTableImpl dmnDecisionTable = transformDecisionTable((DecisionTable) expression);
+      DmnDecisionTableImpl dmnDecisionTable = transformDecisionTable(decision, (DecisionTable) expression);
       dmnDecision.setDecisionLogic(dmnDecisionTable);
 
     } else if (expression instanceof LiteralExpression) {
@@ -280,10 +280,16 @@ public class DefaultDmnTransform implements DmnTransform, DmnElementTransformCon
     return dmnDecision;
   }
 
-  protected DmnDecisionTableImpl transformDecisionTable(DecisionTable decisionTable) {
+  protected DmnDecisionTableImpl transformDecisionTable(Decision decision, DecisionTable decisionTable) {
     DmnElementTransformHandler<DecisionTable, DmnDecisionTableImpl> handler = handlerRegistry.getHandler(DecisionTable.class);
     DmnDecisionTableImpl dmnDecisionTable = handler.handleElement(this, decisionTable);
-
+    
+    Variable variable = decision.getVariable();
+    if (variable != null) {
+        DmnVariableImpl dmnVariable = transformVariable(variable);
+        dmnDecisionTable.setVariable(dmnVariable);
+    }
+    
     for (Input input : decisionTable.getInputs()) {
       parent = dmnDecisionTable;
       this.decisionTable = dmnDecisionTable;

@@ -25,6 +25,8 @@ import org.camunda.bpm.model.dmn.HitPolicy;
 public class DmnDecisionTableImpl implements DmnDecisionLogic {
 
   protected DmnHitPolicyHandler hitPolicyHandler;
+  
+  protected DmnVariableImpl variable;
 
   protected List<DmnDecisionTableInputImpl> inputs = new ArrayList<DmnDecisionTableInputImpl>();
   protected List<DmnDecisionTableOutputImpl> outputs = new ArrayList<DmnDecisionTableOutputImpl>();
@@ -61,6 +63,14 @@ public class DmnDecisionTableImpl implements DmnDecisionLogic {
   public void setRules(List<DmnDecisionTableRuleImpl> rules) {
     this.rules = rules;
   }
+  
+  public DmnVariableImpl getVariable() {
+    return variable;
+}
+  
+  public void setVariable(DmnVariableImpl variable) {
+    this.variable = variable;
+}
 
   @Override
   public String toString() {

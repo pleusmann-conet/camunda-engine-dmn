@@ -30,6 +30,9 @@ public class DmnDecisionTableEvaluationEventImpl implements DmnDecisionTableEval
   protected String collectResultName;
   protected TypedValue collectResultValue;
   protected long executedDecisionElements;
+  
+  protected String variableOutputName;
+  protected TypedValue variableOutputValue;
 
   public DmnDecision getDecisionTable() {
     return getDecision();
@@ -81,6 +84,22 @@ public class DmnDecisionTableEvaluationEventImpl implements DmnDecisionTableEval
 
   public void setExecutedDecisionElements(long executedDecisionElements) {
     this.executedDecisionElements = executedDecisionElements;
+  }
+  
+  public String getVariableOutputName() {
+    return variableOutputName;
+  }
+  
+  public void setVariableOutputName(String variableOutputName) {
+    this.variableOutputName = variableOutputName;
+  }
+  
+  public TypedValue getVariableOutputValue() {
+    return variableOutputValue;
+  }
+  
+  public void setVariableOutputValue(TypedValue variableOutputValue) {
+    this.variableOutputValue = variableOutputValue;
   }
 
   @Override

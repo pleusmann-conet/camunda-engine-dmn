@@ -13,10 +13,13 @@
 package org.camunda.bpm.dmn.engine.impl.evaluation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.assertj.core.util.Arrays;
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnDecisionResult;
 import org.camunda.bpm.dmn.engine.DmnDecisionResultEntries;
@@ -145,12 +148,25 @@ public class DecisionTableEvaluationHandler implements DmnDecisionLogicEvaluatio
   protected void setEvaluationOutput(DmnDecisionTableImpl decisionTable, List<DmnDecisionTableRuleImpl> matchingRules, VariableContext variableContext, DmnDecisionTableEvaluationEventImpl evaluationResult) {
     List<DmnDecisionTableOutputImpl> decisionTableOutputs = decisionTable.getOutputs();
 
+    List<Map<String, TypedValue>> typedValuesForMatchingRules = new ArrayList<Map<String,TypedValue>>(matchingRules.size());
+    
     List<DmnEvaluatedDecisionRule> evaluatedDecisionRules = new ArrayList<DmnEvaluatedDecisionRule>();
     for (DmnDecisionTableRuleImpl matchingRule : matchingRules) {
       DmnEvaluatedDecisionRule evaluatedRule = evaluateMatchingRule(decisionTableOutputs, matchingRule, variableContext);
       evaluatedDecisionRules.add(evaluatedRule);
+      
+      Map<String, TypedValue> variableEntry = new HashMap<String, TypedValue>(); 
+      for (Map.Entry<String, DmnEvaluatedOutput> entry : evaluatedRule.getOutputEntries().entrySet()) {
+          variableEntry.put(entry.getKey(), entry.getValue().getValue());
+      }
+      typedValuesForMatchingRules.add(variableEntry);
     }
     evaluationResult.setMatchingRules(evaluatedDecisionRules);
+    
+    //Add variable to evaluationResult
+//    TypedValue variableOutputValue = decisionTable.getVariable().getTypeDefinition().transform(typedValuesForMatchingRules);
+//    evaluationResult.setVariableOutputName(decisionTable.getVariable().getName());
+//    evaluationResult.setVariableOutputValue(variableOutputValue);
   }
 
   protected DmnEvaluatedDecisionRule evaluateMatchingRule(List<DmnDecisionTableOutputImpl> decisionTableOutputs, DmnDecisionTableRuleImpl matchingRule, VariableContext variableContext) {
@@ -266,7 +282,11 @@ public class DecisionTableEvaluationHandler implements DmnDecisionLogicEvaluatio
         ruleResults.add(ruleResult);
       }
     }
-
+    
+    DmnDecisionResultEntriesImpl ruleResult = new DmnDecisionResultEntriesImpl();
+    ruleResult.putValue(evaluationResult.getVariableOutputName(), evaluationResult.getVariableOutputValue());
+    ruleResults.add(ruleResult);
+    
     return new DmnDecisionResultImpl(ruleResults);
   }
 

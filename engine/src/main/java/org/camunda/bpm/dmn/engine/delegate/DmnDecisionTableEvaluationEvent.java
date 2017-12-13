@@ -53,5 +53,13 @@ public interface DmnDecisionTableEvaluationEvent extends DmnDecisionLogicEvaluat
    * @return the number of executed decision elements during the evaluation
    */
   long getExecutedDecisionElements();
+  
+  public String getVariableOutputName();
+    
+  public void setVariableOutputName(String variableOutputName);
+    
+  public TypedValue getVariableOutputValue();
+    
+  public void setVariableOutputValue(TypedValue variableOutputValue);
 
 }
