@@ -7,10 +7,30 @@
     <version>7.7.0-wts</version>
     <relativePath>bom</relativePath>
   </parent>
-
   <artifactId>camunda-engine-dmn-root</artifactId>
   <name>camunda DMN - engine - root</name>
   <packaging>pom</packaging>
+
+  <distributionManagement>
+    <repository>
+      <id>vsts-maven-whtmanagerrepo</id>
+      <name>WHTmanagerRepo</name>
+      <url>https://sucea.pkgs.visualstudio.com/_packaging/WHTmanagerRepo/maven/v1</url>
+    </repository>
+  </distributionManagement>
+
+  <repositories>
+  <repository>
+   <id>vsts-maven-whtmanagerrepo</id>
+   <url>https://sucea.pkgs.visualstudio.com/_packaging/WHTmanagerRepo/maven/v1</url>
+   <releases>
+    <enabled>true</enabled>
+   </releases>
+   <snapshots>
+    <enabled>true</enabled>
+   </snapshots>
+  </repository>
+ </repositories>
 
   <modules>
     <module>bom</module>
