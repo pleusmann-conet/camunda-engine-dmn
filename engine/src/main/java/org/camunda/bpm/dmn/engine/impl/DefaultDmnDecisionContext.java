@@ -14,6 +14,7 @@
 package org.camunda.bpm.dmn.engine.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,8 +24,10 @@ import java.util.Set;
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnDecisionLogic;
 import org.camunda.bpm.dmn.engine.DmnDecisionResult;
+import org.camunda.bpm.dmn.engine.DmnDecisionResultEntries;
 import org.camunda.bpm.dmn.engine.delegate.DmnDecisionEvaluationListener;
 import org.camunda.bpm.dmn.engine.delegate.DmnDecisionLogicEvaluationEvent;
+import org.camunda.bpm.dmn.engine.delegate.DmnDecisionTableEvaluationEvent;
 import org.camunda.bpm.dmn.engine.impl.delegate.DmnDecisionEvaluationEventImpl;
 import org.camunda.bpm.dmn.engine.impl.evaluation.DecisionLiteralExpressionEvaluationHandler;
 import org.camunda.bpm.dmn.engine.impl.evaluation.DecisionTableEvaluationHandler;
@@ -85,6 +88,11 @@ public class DefaultDmnDecisionContext {
       evaluatedResult = handler.generateDecisionResult(evaluatedEvent);
       if(decision != evaluateDecision) {
         addResultToVariableContext(evaluatedResult, variableMap, evaluateDecision);
+        
+        if (evaluatedEvent instanceof DmnDecisionTableEvaluationEvent) {
+            DmnDecisionTableEvaluationEvent evaluationResult = (DmnDecisionTableEvaluationEvent) evaluatedEvent;
+            variableMap.putValue(evaluationResult.getVariableOutputName(), evaluationResult.getVariableOutputValue());
+        }
       }
     }
 

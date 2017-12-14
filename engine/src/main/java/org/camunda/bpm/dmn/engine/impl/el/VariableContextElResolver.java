@@ -14,6 +14,8 @@ package org.camunda.bpm.dmn.engine.impl.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+import java.util.Map;
+
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
@@ -36,7 +38,17 @@ public class VariableContextElResolver extends ELResolver {
         context.setPropertyResolved(true);
         return variableContext;
       }
-      TypedValue typedValue = variableContext.resolve((String) property);
+      
+      TypedValue typedValue = null;
+      // TODO: Clean this up! Only working in our special signavio usecase
+      if (base != null && base instanceof Map) {
+          typedValue = (TypedValue) ((Map)base).get(property);
+      }
+      
+      if (typedValue==null) {
+          typedValue = variableContext.resolve((String) property);
+      }
+      
       if(typedValue != null) {
         context.setPropertyResolved(true);
         return unpack(typedValue);

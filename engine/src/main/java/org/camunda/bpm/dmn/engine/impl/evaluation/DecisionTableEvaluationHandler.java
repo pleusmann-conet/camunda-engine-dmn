@@ -148,25 +148,29 @@ public class DecisionTableEvaluationHandler implements DmnDecisionLogicEvaluatio
   protected void setEvaluationOutput(DmnDecisionTableImpl decisionTable, List<DmnDecisionTableRuleImpl> matchingRules, VariableContext variableContext, DmnDecisionTableEvaluationEventImpl evaluationResult) {
     List<DmnDecisionTableOutputImpl> decisionTableOutputs = decisionTable.getOutputs();
 
-    List<Map<String, TypedValue>> typedValuesForMatchingRules = new ArrayList<Map<String,TypedValue>>(matchingRules.size());
+    Map<String, TypedValue> variableEntry = null;
     
     List<DmnEvaluatedDecisionRule> evaluatedDecisionRules = new ArrayList<DmnEvaluatedDecisionRule>();
     for (DmnDecisionTableRuleImpl matchingRule : matchingRules) {
       DmnEvaluatedDecisionRule evaluatedRule = evaluateMatchingRule(decisionTableOutputs, matchingRule, variableContext);
       evaluatedDecisionRules.add(evaluatedRule);
       
-      Map<String, TypedValue> variableEntry = new HashMap<String, TypedValue>(); 
-      for (Map.Entry<String, DmnEvaluatedOutput> entry : evaluatedRule.getOutputEntries().entrySet()) {
-          variableEntry.put(entry.getKey(), entry.getValue().getValue());
+      if (variableEntry == null) {
+          // assign first output row to variable. TODO: how to handle multiple rows?
+          variableEntry = new HashMap<String, TypedValue>(); 
+          for (Map.Entry<String, DmnEvaluatedOutput> entry : evaluatedRule.getOutputEntries().entrySet()) {
+              variableEntry.put(entry.getKey(), entry.getValue().getValue());
+          }
       }
-      typedValuesForMatchingRules.add(variableEntry);
     }
     evaluationResult.setMatchingRules(evaluatedDecisionRules);
     
     //Add variable to evaluationResult
-//    TypedValue variableOutputValue = decisionTable.getVariable().getTypeDefinition().transform(typedValuesForMatchingRules);
-//    evaluationResult.setVariableOutputName(decisionTable.getVariable().getName());
-//    evaluationResult.setVariableOutputValue(variableOutputValue);
+    if (variableEntry != null) {
+        TypedValue variableOutputValue = decisionTable.getVariable().getTypeDefinition().transform(variableEntry);
+        evaluationResult.setVariableOutputName(decisionTable.getVariable().getName());
+        evaluationResult.setVariableOutputValue(variableOutputValue);
+    }
   }
 
   protected DmnEvaluatedDecisionRule evaluateMatchingRule(List<DmnDecisionTableOutputImpl> decisionTableOutputs, DmnDecisionTableRuleImpl matchingRule, VariableContext variableContext) {
@@ -282,10 +286,6 @@ public class DecisionTableEvaluationHandler implements DmnDecisionLogicEvaluatio
         ruleResults.add(ruleResult);
       }
     }
-    
-    DmnDecisionResultEntriesImpl ruleResult = new DmnDecisionResultEntriesImpl();
-    ruleResult.putValue(evaluationResult.getVariableOutputName(), evaluationResult.getVariableOutputValue());
-    ruleResults.add(ruleResult);
     
     return new DmnDecisionResultImpl(ruleResults);
   }
