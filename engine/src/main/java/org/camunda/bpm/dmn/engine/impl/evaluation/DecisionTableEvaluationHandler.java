@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.assertj.core.util.Arrays;
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnDecisionResult;
 import org.camunda.bpm.dmn.engine.DmnDecisionResultEntries;
@@ -166,7 +165,7 @@ public class DecisionTableEvaluationHandler implements DmnDecisionLogicEvaluatio
     evaluationResult.setMatchingRules(evaluatedDecisionRules);
     
     //Add variable to evaluationResult
-    if (variableEntry != null) {
+    if (variableEntry != null && decisionTable.getVariable()!=null) {
         TypedValue variableOutputValue = decisionTable.getVariable().getTypeDefinition().transform(variableEntry);
         evaluationResult.setVariableOutputName(decisionTable.getVariable().getName());
         evaluationResult.setVariableOutputValue(variableOutputValue);
