@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.camunda.bpm.dmn.engine.DmnDecision;
 import org.camunda.bpm.dmn.engine.DmnDecisionResult;
@@ -147,7 +146,7 @@ public class DecisionTableEvaluationHandler implements DmnDecisionLogicEvaluatio
   protected void setEvaluationOutput(DmnDecisionTableImpl decisionTable, List<DmnDecisionTableRuleImpl> matchingRules, VariableContext variableContext, DmnDecisionTableEvaluationEventImpl evaluationResult) {
     List<DmnDecisionTableOutputImpl> decisionTableOutputs = decisionTable.getOutputs();
 
-    Map<String, TypedValue> variableEntry = null;
+    Map<String, Object> variableEntry = null;
     
     List<DmnEvaluatedDecisionRule> evaluatedDecisionRules = new ArrayList<DmnEvaluatedDecisionRule>();
     for (DmnDecisionTableRuleImpl matchingRule : matchingRules) {
@@ -156,9 +155,9 @@ public class DecisionTableEvaluationHandler implements DmnDecisionLogicEvaluatio
       
       if (variableEntry == null) {
           // assign first output row to variable. TODO: how to handle multiple rows?
-          variableEntry = new HashMap<String, TypedValue>(); 
+          variableEntry = new HashMap<String, Object>(); 
           for (Map.Entry<String, DmnEvaluatedOutput> entry : evaluatedRule.getOutputEntries().entrySet()) {
-              variableEntry.put(entry.getKey(), entry.getValue().getValue());
+              variableEntry.put(entry.getKey(), entry.getValue().getValue().getValue());
           }
       }
     }
